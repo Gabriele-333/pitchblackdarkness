@@ -68,13 +68,28 @@ public final class PbdNeoForgeConfig implements PbdPlatform {
     }
 
     @Override
+    public void setMoonMatters(boolean value) {
+        MOON_MATTERS.set(value);
+    }
+
+    @Override
     public boolean affectNether() {
         return AFFECT_NETHER.get();
     }
 
     @Override
+    public void setAffectNether(boolean value) {
+        AFFECT_NETHER.set(value);
+    }
+
+    @Override
     public boolean affectEnd() {
         return AFFECT_END.get();
+    }
+
+    @Override
+    public void setAffectEnd(boolean value) {
+        AFFECT_END.set(value);
     }
 
     // ===== Ricalcolo a ogni load/reload =====

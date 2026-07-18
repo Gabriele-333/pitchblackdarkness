@@ -13,6 +13,12 @@ dependencies {
 
     implementation project(':common')
 
+    // ModMenu: solo in compile, e NON transitivo (si tirerebbe dietro mezzo
+    // Fabric API). A runtime è opzionale — vedi PbdModMenu.
+    modCompileOnly("com.terraformersmc:modmenu:${modmenu_version}") {
+        transitive = false
+    }
+
     // Su Fabric MixinExtras non è bundled: va incluso nel jar (jar-in-jar).
     include implementation('io.github.llamalad7:mixinextras-fabric:0.5.3')
 }

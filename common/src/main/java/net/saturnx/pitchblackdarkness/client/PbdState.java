@@ -154,6 +154,19 @@ public final class PbdState {
         return configLevel;
     }
 
+    /**
+     * Anteprima dal vivo: cambia l'effetto SENZA scrivere su file né toccare la
+     * piattaforma. La usa lo slider della schermata di config mentre lo trascini
+     * — {@code applyValue()} scatta a ogni pixel, e persistere lì significherebbe
+     * una scrittura su disco per pixel. Il valore viene reso definitivo con
+     * {@link #setLevel(double)} al rilascio; qualsiasi {@link #refresh()} nel
+     * frattempo lo riallinea alla config, che è il comportamento voluto.
+     */
+    public static void previewLevel(double level) {
+        configLevel = (float) Mth.clamp(level, 0.0, 5.0);
+        recompute();
+    }
+
     /** Cambia il livello persistito: effetto immediato, salvataggio su file. */
     public static void setLevel(double level) {
         double clamped = Mth.clamp(level, 0.0, 5.0);

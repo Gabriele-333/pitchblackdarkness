@@ -22,9 +22,15 @@ public interface PbdPlatform {
     /** La fase lunare modula la notte. */
     boolean moonMatters();
 
+    void setMoonMatters(boolean value);
+
     /** Applica il buio anche nel Nether (solo asse caverna: non ha sky-light). */
     boolean affectNether();
 
+    void setAffectNether(boolean value);
+
     /** Applica il buio anche nell'End (solo asse caverna: non ha sky-light). */
     boolean affectEnd();
+
+    void setAffectEnd(boolean value);
 }

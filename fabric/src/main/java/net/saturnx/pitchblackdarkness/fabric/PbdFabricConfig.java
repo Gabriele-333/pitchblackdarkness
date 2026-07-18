@@ -71,13 +71,31 @@ public final class PbdFabricConfig implements PbdPlatform {
     }
 
     @Override
+    public void setMoonMatters(boolean value) {
+        moonMatters = value;
+        save();
+    }
+
+    @Override
     public boolean affectNether() {
         return affectNether;
     }
 
     @Override
+    public void setAffectNether(boolean value) {
+        affectNether = value;
+        save();
+    }
+
+    @Override
     public boolean affectEnd() {
         return affectEnd;
+    }
+
+    @Override
+    public void setAffectEnd(boolean value) {
+        affectEnd = value;
+        save();
     }
 
     // ===== File =====
