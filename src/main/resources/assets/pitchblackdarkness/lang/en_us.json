@@ -1,0 +1,11 @@
+{
+  "pitchblackdarkness.configuration.title": "PBD - Pitch Black Darkness",
+  "pitchblackdarkness.configuration.darknessLevel": "Darkness level",
+  "pitchblackdarkness.configuration.darknessLevel.tooltip": "0 = vanilla, 3 = dark nights and black caves, 5 = absolute pitch black. Fractions like 0.5 keep a hint of visibility. Daylight is never touched. In game: /pbd <0-5>",
+  "pitchblackdarkness.configuration.moonMatters": "Moon phase matters",
+  "pitchblackdarkness.configuration.moonMatters.tooltip": "Full moon nights stay somewhat visible; new moon nights get the full darkness. If off, every night is as dark as a moonless one.",
+  "pitchblackdarkness.configuration.affectNether": "Affect the Nether",
+  "pitchblackdarkness.configuration.affectNether.tooltip": "Apply darkness in the Nether too (cave axis only: no sky light down there).",
+  "pitchblackdarkness.configuration.affectEnd": "Affect the End",
+  "pitchblackdarkness.configuration.affectEnd.tooltip": "Apply darkness in the End too (cave axis only: no sky light out there)."
+}

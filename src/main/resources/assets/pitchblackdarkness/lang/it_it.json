@@ -1,0 +1,11 @@
+{
+  "pitchblackdarkness.configuration.title": "PBD - Pitch Black Darkness",
+  "pitchblackdarkness.configuration.darknessLevel": "Livello di buio",
+  "pitchblackdarkness.configuration.darknessLevel.tooltip": "0 = vanilla, 3 = notti scure e caverne nere, 5 = nero assoluto. I decimali tipo 0.5 lasciano un filo di visibilità. Il giorno non si tocca mai. In gioco: /pbd <0-5>",
+  "pitchblackdarkness.configuration.moonMatters": "La fase lunare conta",
+  "pitchblackdarkness.configuration.moonMatters.tooltip": "Con la luna piena la notte resta un po' visibile; senza luna arriva il buio pieno. Se spento, ogni notte è buia come una notte senza luna.",
+  "pitchblackdarkness.configuration.affectNether": "Anche nel Nether",
+  "pitchblackdarkness.configuration.affectNether.tooltip": "Applica il buio anche nel Nether (solo asse caverna: laggiù non c'è luce del cielo).",
+  "pitchblackdarkness.configuration.affectEnd": "Anche nell'End",
+  "pitchblackdarkness.configuration.affectEnd.tooltip": "Applica il buio anche nell'End (solo asse caverna: lassù non c'è luce del cielo)."
+}

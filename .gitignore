@@ -1,0 +1,34 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# NeoForge / MDG dev run
+run/
+runs/
+run-data/
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+bin/
+eclipse/
+.metadata/
+
+# Documentazione di lavoro interna (contesto Claude, note V112): resta in locale
+CLAUDE.md
+TODO.md
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / temp
+*.log

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "net.saturnx.pitchblackdarkness.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "LightTextureMixin",
+    "ClientLevelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
