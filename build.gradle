@@ -5,11 +5,11 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.141'
 }
 
-// Jar distribuito: PitchBlackDarkness-<mc>-<mod>.jar (convenzione mod).
-// NB: guida anche la versione Maven -> la dipendenza V112 diventa
-// net.saturnx:pitchblackdarkness:${minecraft_version}-${mod_version}.
-// La versione mostrata in gioco resta mod_version: il toml usa ${mod_version}.
-version = "${minecraft_version}-${mod_version}"
+// La versione del PROGETTO resta pulita (0.1.0): è la coordinata Maven con cui
+// V112 prende la dipendenza (net.saturnx:pitchblackdarkness:0.1.0). Il nome del
+// jar distribuito porta invece anche la versione MC — vedi archiveVersion sotto:
+// filename e coordinata sono cose diverse e vanno tenute separate.
+version = mod_version
 group = mod_group_id
 
 repositories {
@@ -19,6 +19,13 @@ repositories {
 
 base {
     archivesName = 'PitchBlackDarkness'
+}
+
+// Jar distribuito: PitchBlackDarkness-<mc>-<mod>.jar (convenzione mod, e quando
+// arriveranno più versioni MC i file resteranno distinguibili). Tocca SOLO il
+// nome del file: la coordinata Maven sopra non si muove.
+tasks.named('jar') {
+    archiveVersion = "${minecraft_version}-${mod_version}"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
