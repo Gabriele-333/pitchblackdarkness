@@ -1,0 +1,35 @@
+plugins {
+    id 'maven-publish'
+}
+
+// Java puro. Nessun plugin Minecraft, nessuna dipendenza: è la garanzia
+// strutturale che qui non entrino import net.minecraft.* — se qualcuno ci
+// prova, non compila.
+//
+// È ANCHE il modulo che V112 consuma: PitchBlackApi vive qui ed è agnostica per
+// loader e per versione, quindi la coordinata resta stabile nel tempo.
+//   net.saturnx:pitchblackdarkness:0.1.0
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifactId = mod_id
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = "file://${rootProject.projectDir}/repo"
+        }
+    }
+}

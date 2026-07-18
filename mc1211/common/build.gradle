@@ -1,0 +1,27 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+// Vanilla PURO, mapping Mojang, nessun loader. Qui vive il grosso della mod: i
+// tre mixin e tutta la matematica di PbdState, che sono identici su ogni loader
+// perché toccano solo classi di Minecraft. Questo modulo non produce un jar
+// distribuibile: il suo output viene incluso dentro quelli di neoforge/fabric.
+neoForge {
+    neoFormVersion = project.neoform_version
+}
+
+dependencies {
+    // Il nucleo puro: curva dei livelli, API, interfaccia piattaforma.
+    api project(':core')
+
+    // Annotazioni Mixin: in NeoForm puro non le fornisce nessuno, ma il codice
+    // dei mixin va comunque compilato qui. A runtime le mette il loader.
+    compileOnly 'org.spongepowered:mixin:0.8.5'
+    // @WrapOperation (Hook 3). Versione allineata a quella bundled in NeoForge
+    // 21.1.232 (jarjar 0.5.3): NON alzarla senza ricontrollare il jarjar.
+    compileOnly 'io.github.llamalad7:mixinextras-common:0.5.3'
+}
+
+// La pubblicazione per V112 NON sta più qui: PitchBlackApi è passata in :core,
+// che è Java puro e quindi una dipendenza valida su ogni loader e ogni versione.
+// Vedi core/build.gradle.

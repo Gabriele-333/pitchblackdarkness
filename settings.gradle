@@ -15,8 +15,16 @@ plugins {
 // ("PitchBlack"): la coordinate per V112 deve essere net.saturnx:pitchblackdarkness.
 rootProject.name = 'pitchblackdarkness'
 
-// Un modulo vanilla condiviso + un modulo per loader. Il grosso della mod (i tre
-// mixin e tutta la matematica) vive in common ed è compilato UNA volta sola.
-include 'common'
-include 'neoforge'
-include 'fabric'
+// Tre livelli, dal generale al particolare:
+//   core          Java puro: curva dei livelli, API, interfaccia piattaforma.
+//                 ZERO import net.minecraft -> sopravvive ai cambi di versione.
+//   mc<ver>/common   sa di quella versione di Minecraft, non del loader (mixin).
+//   mc<ver>/<loader> sa del loader (config, tick, comando, schermata).
+// Dalla 26.1 la lightmap è passata sulla GPU e mezzo nostro codice-gioco non
+// compila più: per questo l'asse VERSIONE è una gerarchia di moduli e non
+// commenti-preprocessore. Aggiungere la 26.2 = aggiungere mc262/*, senza
+// toccare né core né mc1211.
+include 'core'
+include 'mc1211:common'
+include 'mc1211:neoforge'
+include 'mc1211:fabric'
