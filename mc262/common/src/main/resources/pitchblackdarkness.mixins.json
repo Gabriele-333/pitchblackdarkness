@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "net.saturnx.pitchblackdarkness.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "LightmapRenderStateExtractorMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

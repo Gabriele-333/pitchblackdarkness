@@ -1,0 +1,20 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+// Minecraft 26.2, vanilla puro (mapping Mojang, nessun loader).
+neoForge {
+    neoFormVersion = project.neoform_version_262
+}
+
+// 26.x richiede Java 25: sovrascrive il 21 impostato per tutti nel root.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+dependencies {
+    // Il nucleo puro, IDENTICO a quello usato da mc1211: è tutto ciò che
+    // sopravvive intatto al salto di versione.
+    api project(':core')
+
+    compileOnly 'org.spongepowered:mixin:0.8.5'
+    compileOnly 'io.github.llamalad7:mixinextras-common:0.5.3'
+}

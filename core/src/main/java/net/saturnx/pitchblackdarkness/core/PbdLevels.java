@@ -36,8 +36,24 @@ public final class PbdLevels {
     /** Bonus di visibilità con luna piena, scalato dalla fase (1.0 = piena). */
     private static final float[] MOON_BONUS = {0.25F, 0.20F, 0.15F, 0.10F, 0.05F};
 
-    /** Vanilla 1.21.1: getSkyDarken rende f1*0.8+0.2 — la notte piena vale 0.2, mai meno. */
-    public static final float VANILLA_NIGHT_FLOOR = 0.2F;
+    /**
+     * Quanto vale il fattore cielo vanilla in piena notte (il giorno vale 1.0).
+     * <b>Dipende dalla versione</b>, quindi lo installa il modulo della versione:
+     * su 1.21.1 {@code getSkyDarken} rende {@code f1*0.8+0.2} → 0.2; su 26.2 il
+     * timeline {@code day.json} interpola {@code visual/sky_light_factor} da 1.0
+     * a <b>0.24</b>. È l'unico numero che cambia: la rimappatura è identica.
+     */
+    private static float vanillaNightFloor = 0.2F;
+
+    public static float vanillaNightFloor() {
+        return vanillaNightFloor;
+    }
+
+    /** Installato dal modulo della versione al proprio avvio. */
+    public static void setVanillaNightFloor(float value) {
+        vanillaNightFloor = value;
+        nightFloor = value;
+    }
 
     /**
      * Soglia del gate ammazza-floor: i texel con visibilità target sotto il 10%
@@ -52,7 +68,7 @@ public final class PbdLevels {
     // ===== Output precalcolati: gli UNICI campi letti dai mixin =====
     private static boolean active;
     private static final float[] crushTable = new float[16];
-    private static float nightFloor = VANILLA_NIGHT_FLOOR;
+    private static float nightFloor = vanillaNightFloor;
     /** Visibilità del contributo cielo ADESSO: 1.0 di giorno, m' in piena notte. */
     private static float skyGate = 1.0F;
 
@@ -169,7 +185,7 @@ public final class PbdLevels {
      * — quindi alba e tramonto restano morbidi per costruzione.
      */
     public static float remapSkyDarken(float vanilla) {
-        float dayness = clamp((vanilla - VANILLA_NIGHT_FLOOR) / (1.0F - VANILLA_NIGHT_FLOOR), 0.0F, 1.0F);
+        float dayness = clamp((vanilla - vanillaNightFloor) / (1.0F - vanillaNightFloor), 0.0F, 1.0F);
         return dayness * (1.0F - nightFloor) + nightFloor;
     }
 
@@ -283,7 +299,7 @@ public final class PbdLevels {
         float L = Math.max(configLevel, 5.0F * boostValue());
         active = L > 0.001F;
         if (!active) {
-            nightFloor = VANILLA_NIGHT_FLOOR;
+            nightFloor = vanillaNightFloor;
             skyGate = 1.0F;
             java.util.Arrays.fill(crushTable, 1.0F);
             return;
@@ -307,7 +323,7 @@ public final class PbdLevels {
         // Asse notte: floor notturno = 0.2 * (base + bonus luna * fase).
         float moon = moonMatters ? clamp(moonBrightness, 0.0F, 1.0F) : 0.0F;
         float m = clamp(skyNight + moonBonus * moon, 0.0F, 1.0F);
-        nightFloor = VANILLA_NIGHT_FLOOR * lerp(strength, 1.0F, m);
+        nightFloor = vanillaNightFloor * lerp(strength, 1.0F, m);
     }
 
     // ===== Piccole utility: qui non c'è Mth, siamo fuori da Minecraft =====

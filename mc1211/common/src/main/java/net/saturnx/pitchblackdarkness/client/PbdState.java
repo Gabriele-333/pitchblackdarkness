@@ -130,7 +130,7 @@ public final class PbdState {
         float nightFloor = PbdLevels.nightFloor();
         float remapped = mc.level.getSkyDarken(1.0F);
         float dayness = Mth.clamp((remapped - nightFloor) / Math.max(1.0F - nightFloor, 1.0E-4F), 0.0F, 1.0F);
-        float vanilla = dayness * (1.0F - PbdLevels.VANILLA_NIGHT_FLOOR) + PbdLevels.VANILLA_NIGHT_FLOOR;
+        float vanilla = dayness * (1.0F - PbdLevels.vanillaNightFloor()) + PbdLevels.vanillaNightFloor();
         PbdLevels.setSkyGate(remapped / vanilla);
     }
 }
