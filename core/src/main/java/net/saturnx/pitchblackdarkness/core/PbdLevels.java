@@ -170,6 +170,21 @@ public final class PbdLevels {
         return nightFloor;
     }
 
+    /**
+     * Quanto "a fondo" spingere gli effetti che non sono una curva per-livello ma
+     * un semplice scalare, 0–1 sul livello 0–5.
+     *
+     * <p>Serve alle versioni dove la curva vera non e' applicabile: da 26.1 la
+     * rampa dei livelli sta nel GLSL e dall'UBO passano solo scalari, quindi
+     * l'asse caverna si approssima scalando i fattori. Qui l'interpolazione e'
+     * lineare sul livello, non sulla tabella {@link #CRUSH_EXP}, perche' quella
+     * descrive la forma di una curva che in quel contesto non esiste.</p>
+     */
+    public static float crushStrength() {
+        float L = Math.max(configLevel, 5.0F * boostValue());
+        return clamp(L / (float) MAX_LEVEL, 0.0F, 1.0F);
+    }
+
     public static float skyGate() {
         return skyGate;
     }

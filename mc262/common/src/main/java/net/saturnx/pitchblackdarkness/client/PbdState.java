@@ -92,10 +92,31 @@ public final class PbdState {
         // versione (0.24). Il giorno (1.0) è un punto fisso: resta 1.0.
         state.skyFactor = PbdLevels.remapSkyDarken(state.skyFactor);
 
-        // Asse caverna: un texel non illuminato vale esattamente ambientColor,
-        // quindi è QUI che si spegne la caverna — senza toccare blockFactor, e
-        // quindi senza toccare le torce.
+        // Asse caverna, primo pezzo: un texel non illuminato vale esattamente
+        // ambientColor (nell'overworld #0a0a0a), quindi è qui che si spegne il
+        // buio totale.
         state.ambientColor = scale(state.ambientColor, PbdLevels.crushFactor(0));
+
+        // Asse caverna, secondo pezzo: i livelli di luce INTERMEDI.
+        //
+        // Su 1.21.1 la curva (luce/15)^exp li schiacciava uno per uno. Qui non si
+        // può: quella curva e' dentro il GLSL (`get_brightness`) e dall'UBO
+        // passano solo scalari, che agiscono su tutti i livelli insieme.
+        //
+        // Esiste pero' un margine gratis. Lo shader calcola
+        // `get_brightness(level) * BlockFactor` con BlockFactor ~1.4, e poi
+        // clampa il colore a 1.0: alla luce 15 il risultato satura comunque, e
+        // il 40% eccedente e' sprecato. Portando BlockFactor giu' fino al punto
+        // di saturazione (1.0) le torce restano IDENTICHE — continuano a
+        // saturare — mentre tutto cio' che sta sotto si scurisce.
+        //
+        // NB: e' un miglioramento parziale, non l'equivalente della curva di
+        // 1.21.1. Sotto 1.0 si inizierebbe a spegnere anche le torce, e questo
+        // la mod non lo fa: riprodurre la curva vera richiederebbe sostituire
+        // lightmap.fsh, che confliggerebbe con shader pack e altre mod.
+        float saturationPoint = Math.min(state.blockFactor, 1.0F);
+        state.blockFactor = PbdLevels.lerp(
+                PbdLevels.crushStrength(), state.blockFactor, saturationPoint);
     }
 
     /** Scala un colore mantenendolo sopra lo zero esatto (vedi BLACK_EPSILON). */
