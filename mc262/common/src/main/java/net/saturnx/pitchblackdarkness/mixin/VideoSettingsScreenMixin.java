@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.Arrays;
 
 /**
- * Appende il livello di buio alle Impostazioni Video, accanto a Luminosità.
+ * Appende le opzioni della mod alle Impostazioni Video, accanto a Luminosità.
  *
  * <p>Vanilla costruisce quella schermata da un {@code OptionInstance<?>[]} reso
  * da un metodo statico, quindi basta allungare l'array: nessuna riscrittura di
@@ -26,8 +26,9 @@ import java.util.Arrays;
 public class VideoSettingsScreenMixin {
     @ModifyReturnValue(method = "displayOptions", at = @At("RETURN"))
     private static OptionInstance<?>[] pbd$addDarknessOption(OptionInstance<?>[] original) {
-        OptionInstance<?>[] withDarkness = Arrays.copyOf(original, original.length + 1);
-        withDarkness[original.length] = PbdVideoOption.create();
-        return withDarkness;
+        OptionInstance<?>[] ours = PbdVideoOption.createAll();
+        OptionInstance<?>[] combined = Arrays.copyOf(original, original.length + ours.length);
+        System.arraycopy(ours, 0, combined, original.length, ours.length);
+        return combined;
     }
 }
