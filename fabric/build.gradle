@@ -1,0 +1,46 @@
+plugins {
+    id 'fabric-loom'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    // Mojang mappings anche su Fabric: è ciò che permette a common (e quindi ai
+    // tre mixin) di essere UN solo sorgente valido per entrambi i loader.
+    mappings loom.officialMojangMappings()
+
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+
+    implementation project(':common')
+
+    // Su Fabric MixinExtras non è bundled: va incluso nel jar (jar-in-jar).
+    include implementation('io.github.llamalad7:mixinextras-fabric:0.5.3')
+}
+
+processResources {
+    var replaceProperties = [mod_id                    : mod_id,
+                             mod_name                  : mod_name,
+                             mod_license               : mod_license,
+                             mod_version               : mod_version,
+                             mod_authors               : mod_authors,
+                             mod_description           : mod_description,
+                             fabric_minecraft_version_range: fabric_minecraft_version_range,
+                             fabric_loader_version_range: fabric_loader_version_range]
+    inputs.properties replaceProperties
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties
+    }
+}
+
+// Il jar distribuito contiene anche common: è un modulo interno, non una
+// dipendenza che l'utente debba installare.
+tasks.named('jar') {
+    from project(':common').sourceSets.main.output
+}
+
+// Su Loom il jar finale è remapJar (jar è quello non rimappato).
+tasks.named('remapJar') {
+    archiveBaseName = 'PitchBlackDarkness'
+    archiveVersion = "Fabric-${minecraft_version}-${mod_version}"
+    destinationDirectory = rootProject.layout.buildDirectory.dir('libs/fabric')
+}

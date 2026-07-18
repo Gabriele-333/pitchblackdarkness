@@ -3,11 +3,7 @@ package net.saturnx.pitchblackdarkness.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.saturnx.pitchblackdarkness.config.PbdConfig;
+import net.saturnx.pitchblackdarkness.Pbd;
 
 /**
  * Il cuore della mod: trasforma il livello 0–5 (più l'eventuale boost transiente
@@ -32,7 +28,6 @@ import net.saturnx.pitchblackdarkness.config.PbdConfig;
  *       lunare. Il giorno (valore 1.0) è un punto fisso: resta 1.0 identico.</li>
  * </ul>
  */
-@EventBusSubscriber(modid = "pitchblackdarkness", value = Dist.CLIENT)
 public final class PbdState {
     // ===== La curva dei livelli (tabella in CLAUDE.md; indice = livello-1) =====
     /** Esponente della curva caverna: più alto = i livelli di luce bassi collassano prima. */
@@ -162,7 +157,7 @@ public final class PbdState {
     /** Cambia il livello persistito: effetto immediato, salvataggio su file. */
     public static void setLevel(double level) {
         double clamped = Mth.clamp(level, 0.0, 5.0);
-        PbdConfig.DARKNESS_LEVEL.set(clamped);
+        Pbd.platform().setDarknessLevel(clamped);
         refresh();
     }
 
@@ -192,10 +187,11 @@ public final class PbdState {
 
     /** Rilegge la config e ricalcola tutto. Chiamata a ogni load/reload/setLevel. */
     public static void refresh() {
-        configLevel = PbdConfig.DARKNESS_LEVEL.get().floatValue();
-        moonMatters = PbdConfig.MOON_MATTERS.get();
-        affectNether = PbdConfig.AFFECT_NETHER.get();
-        affectEnd = PbdConfig.AFFECT_END.get();
+        var platform = Pbd.platform();
+        configLevel = (float) platform.darknessLevel();
+        moonMatters = platform.moonMatters();
+        affectNether = platform.affectNether();
+        affectEnd = platform.affectEnd();
         recompute();
     }
 
@@ -203,8 +199,12 @@ public final class PbdState {
     // Tick: countdown del boost e ricalcolo (fase lunare inclusa).
     // ------------------------------------------------------------------
 
-    @SubscribeEvent
-    static void onClientTick(ClientTickEvent.Post event) {
+    /**
+     * Da chiamare a ogni client tick. Non è un evento: lo aggancia il modulo del
+     * loader con la propria API ({@code ClientTickEvent.Post} su NeoForge,
+     * {@code ClientTickEvents.END_CLIENT_TICK} su Fabric).
+     */
+    public static void clientTick() {
         if (boostTicksLeft > 0 && !Minecraft.getInstance().isPaused()) {
             boostTicksLeft--;
         }

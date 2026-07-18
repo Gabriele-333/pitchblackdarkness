@@ -1,23 +1,24 @@
-package net.saturnx.pitchblackdarkness.config;
+package net.saturnx.pitchblackdarkness.neoforge;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.saturnx.pitchblackdarkness.PitchBlackDarkness;
+import net.saturnx.pitchblackdarkness.Pbd;
 import net.saturnx.pitchblackdarkness.client.PbdState;
+import net.saturnx.pitchblackdarkness.platform.PbdPlatform;
 
 /**
- * Config client. PICCOLA di proposito: l'unica opzione che conta davvero è
- * {@link #DARKNESS_LEVEL}. Tutto il resto è rifinitura.
+ * Config client su NeoForge, e insieme l'implementazione di {@link PbdPlatform}.
+ * PICCOLA di proposito: l'unica opzione che conta davvero è il livello.
  *
  * <p>I valori NON vanno letti nei punti caldi del rendering: a ogni load/reload
  * {@link PbdState#refresh()} li precalcola in campi statici piatti. I mixin
  * leggono solo quelli.</p>
  */
-@EventBusSubscriber(modid = PitchBlackDarkness.MOD_ID, value = Dist.CLIENT)
-public final class PbdConfig {
+@EventBusSubscriber(modid = Pbd.MOD_ID, value = Dist.CLIENT)
+public final class PbdNeoForgeConfig implements PbdPlatform {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     /** Il livello 0–5: l'unica cosa che il giocatore deve capire. Mezzi step ammessi (es. 0.5). */
@@ -45,7 +46,38 @@ public final class PbdConfig {
 
     public static final ModConfigSpec SPEC = BUILDER.build();
 
-    private PbdConfig() {}
+    public static final PbdNeoForgeConfig INSTANCE = new PbdNeoForgeConfig();
+
+    private PbdNeoForgeConfig() {}
+
+    // ===== PbdPlatform =====
+
+    @Override
+    public double darknessLevel() {
+        return DARKNESS_LEVEL.get();
+    }
+
+    @Override
+    public void setDarknessLevel(double level) {
+        DARKNESS_LEVEL.set(level);
+    }
+
+    @Override
+    public boolean moonMatters() {
+        return MOON_MATTERS.get();
+    }
+
+    @Override
+    public boolean affectNether() {
+        return AFFECT_NETHER.get();
+    }
+
+    @Override
+    public boolean affectEnd() {
+        return AFFECT_END.get();
+    }
+
+    // ===== Ricalcolo a ogni load/reload =====
 
     @SubscribeEvent
     static void onLoad(ModConfigEvent.Loading event) {

@@ -3,6 +3,7 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
+        maven { url = 'https://maven.fabricmc.net/' }
     }
 }
 
@@ -13,3 +14,9 @@ plugins {
 // Senza questo, l'artifactId su Maven diventa il nome della CARTELLA
 // ("PitchBlack"): la coordinate per V112 deve essere net.saturnx:pitchblackdarkness.
 rootProject.name = 'pitchblackdarkness'
+
+// Un modulo vanilla condiviso + un modulo per loader. Il grosso della mod (i tre
+// mixin e tutta la matematica) vive in common ed è compilato UNA volta sola.
+include 'common'
+include 'neoforge'
+include 'fabric'

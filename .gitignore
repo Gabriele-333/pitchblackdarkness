@@ -8,6 +8,9 @@ run/
 runs/
 run-data/
 
+# Repo Maven locale prodotto da :common:publish (dipendenza per V112)
+repo/
+
 # IDEs
 .idea/
 *.iml

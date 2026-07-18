@@ -1,0 +1,68 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    version = project.neo_version
+
+    runs {
+        client { client() }
+        // Serve solo a verificare il requisito "no-op pulito su server dedicato":
+        // la mod è client-only e qui non deve fare NIENTE.
+        server {
+            server()
+            programArgument '--nogui'
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+            // Senza questo il codice di common non è sulla classpath del run.
+            sourceSet(project(':common').sourceSets.main)
+        }
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    // MixinExtras: NeoForge 21.1.232 lo include a runtime (jarjar, 0.5.3) —
+    // qui serve solo in compile per @WrapOperation (Hook 3).
+    compileOnly 'io.github.llamalad7:mixinextras-neoforge:0.5.3'
+}
+
+// Espande le proprietà nel template neoforge.mods.toml (${} Groovy notation).
+var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [minecraft_version      : minecraft_version,
+                             minecraft_version_range: minecraft_version_range,
+                             neo_version            : neo_version,
+                             neo_version_range      : neo_version_range,
+                             loader_version_range   : loader_version_range,
+                             mod_id                 : mod_id,
+                             mod_name               : mod_name,
+                             mod_license            : mod_license,
+                             mod_version            : mod_version,
+                             mod_authors            : mod_authors,
+                             mod_description        : mod_description]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+// Il jar distribuito contiene anche common: è un modulo interno, non una
+// dipendenza che l'utente debba installare.
+tasks.named('jar') {
+    from project(':common').sourceSets.main.output
+
+    archiveBaseName = 'PitchBlackDarkness'
+    archiveVersion = "NeoForge-${minecraft_version}-${mod_version}"
+    destinationDirectory = rootProject.layout.buildDirectory.dir('libs/neoforge')
+}
