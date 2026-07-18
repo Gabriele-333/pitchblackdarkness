@@ -3,6 +3,9 @@ plugins {
     // (NeoForm per il vanilla puro, NeoForge per il loader), fabric usa Loom.
     id 'net.neoforged.moddev' version '2.0.141' apply false
     id 'fabric-loom' version '1.17.16' apply false
+    // Da MC 26.1 il gioco e' deobfuscato: fabric-loom "legacy" resta solo per le
+    // versioni offuscate, per le nuove serve fabric-loom-remap.
+    id 'net.fabricmc.fabric-loom-remap' version '1.18.0-alpha.9' apply false
 }
 
 // Configurazione comune a tutti i moduli. La versione del PROGETTO resta pulita

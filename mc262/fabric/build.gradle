@@ -1,0 +1,79 @@
+plugins {
+    id 'net.fabricmc.fabric-loom-remap'
+}
+
+// 26.x richiede Java 25: sovrascrive il 21 impostato per tutti nel root.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+loom {
+    // Senza questo, nel client di SVILUPPO Fabric non sa che le risorse di
+    // common fanno parte della mod: i lang non vengono caricati e la schermata
+    // mostra le chiavi grezze ("pitchblackdarkness.configuration.darknessLevel")
+    // invece dei testi. Nel jar buildato il problema non c'è, perché l'output di
+    // common viene fuso dentro (vedi il task jar in fondo) — è un disallineamento
+    // solo del dev run. È l'equivalente Loom del blocco `mods` di NeoForge.
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+            sourceSet project(':mc262:common').sourceSets.main
+            sourceSet project(':core').sourceSets.main
+        }
+    }
+
+    runs {
+        client {
+            // Diagnostica dei mixin nel client di sviluppo, per avere su Fabric
+            // la stessa visibilità che su NeoForge dà logLevel = DEBUG: senza,
+            // le righe "Mixing ... into ..." non compaiono e non c'è modo di
+            // verificare che gli hook si siano applicati davvero.
+            // `export` scrive le classi trasformate in run/.mixin.out/ — è la
+            // prova oggettiva. Riguarda solo il run: il jar non è toccato.
+            vmArg '-Dmixin.debug.verbose=true'
+            vmArg '-Dmixin.debug.export=true'
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:26.2"
+    // NESSUNA riga `mappings`: da 26.1 Minecraft è distribuito DEOBFUSCATO e
+    // Fabric ha smesso di mantenere Yarn/Intermediary. I nomi sono già quelli
+    // Mojang, cioè esattamente quelli con cui core e mc262/common sono scritti.
+
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version_262}"
+
+    implementation project(':mc262:common')
+
+    // Su Fabric MixinExtras non è bundled: va incluso nel jar (jar-in-jar).
+    include implementation('io.github.llamalad7:mixinextras-fabric:0.5.3')
+}
+
+processResources {
+    var replaceProperties = [mod_id                    : mod_id,
+                             mod_name                  : mod_name,
+                             mod_license               : mod_license,
+                             mod_version               : mod_version,
+                             mod_authors               : mod_authors,
+                             mod_description           : mod_description,
+                             fabric_minecraft_version_range: fabric_minecraft_version_range_262,
+                             fabric_loader_version_range: fabric_loader_version_range]
+    inputs.properties replaceProperties
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties
+    }
+}
+
+// Il jar distribuito contiene anche common: è un modulo interno, non una
+// dipendenza che l'utente debba installare.
+tasks.named('jar') {
+    from project(':mc262:common').sourceSets.main.output
+    from project(':core').sourceSets.main.output
+}
+
+// Su Loom il jar finale è remapJar (jar è quello non rimappato).
+tasks.named('remapJar') {
+    archiveBaseName = 'PitchBlackDarkness'
+    archiveVersion = "Fabric-26.2-${mod_version}"
+    destinationDirectory = rootProject.layout.buildDirectory.dir('libs/fabric')
+}

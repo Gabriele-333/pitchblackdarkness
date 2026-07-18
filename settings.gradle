@@ -33,3 +33,11 @@ include 'mc1211:fabric'
 // arriveranno quando NeoForge 26.2 uscira' di beta.
 include 'mc262:common'
 include 'mc262:neoforge'
+// include 'mc262:fabric'   <-- DISATTIVATO di proposito, non e' incompleto:
+// il modulo e' scritto, ma la toolchain Fabric per 26.2 non e' ancora usabile.
+// Da 26.1 Minecraft e' deobfuscato e Fabric ha smesso di mantenere
+// Yarn/Intermediary, quindi non esistono piu' i mapping che fabric-loom
+// pretende; ma anche fabric-loom-remap (1.17.16 e 1.18.0-alpha.9) fallisce con
+// "Configuration 'mappings' has no dependencies". Riattivare quando la
+// toolchain si stabilizza (o quando un template Fabric 26.x mostra la sintassi
+// giusta): il resto del modulo e' pronto.
