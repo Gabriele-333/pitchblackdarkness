@@ -2,6 +2,21 @@ plugins {
     id 'fabric-loom'
 }
 
+loom {
+    runs {
+        client {
+            // Diagnostica dei mixin nel client di sviluppo, per avere su Fabric
+            // la stessa visibilità che su NeoForge dà logLevel = DEBUG: senza,
+            // le righe "Mixing ... into ..." non compaiono e non c'è modo di
+            // verificare che gli hook si siano applicati davvero.
+            // `export` scrive le classi trasformate in run/.mixin.out/ — è la
+            // prova oggettiva. Riguarda solo il run: il jar non è toccato.
+            vmArg '-Dmixin.debug.verbose=true'
+            vmArg '-Dmixin.debug.export=true'
+        }
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     // Mojang mappings anche su Fabric: è ciò che permette a common (e quindi ai
