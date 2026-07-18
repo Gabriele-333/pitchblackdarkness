@@ -8,8 +8,7 @@
   "license": "${mod_license}",
   "environment": "client",
   "entrypoints": {
-    "client": ["net.saturnx.pitchblackdarkness.fabric.PbdFabric"],
-    "modmenu": ["net.saturnx.pitchblackdarkness.fabric.PbdModMenu"]
+    "client": ["net.saturnx.pitchblackdarkness.fabric.PbdFabric"]
   },
   "mixins": [
     {
@@ -21,7 +20,6 @@
     "fabricloader": "${fabric_loader_version_range}",
     "minecraft": "${fabric_minecraft_version_range}",
     "java": ">=21",
-    "fabric-api": "*",
-    "modmenu": "*"
+    "fabric-api": "*"
   }
 }

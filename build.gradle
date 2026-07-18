@@ -28,7 +28,6 @@ subprojects {
         maven { url = 'https://maven.neoforged.net/releases' }
         maven { url = 'https://maven.fabricmc.net/' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' } // annotazioni Mixin per common
-        maven { url = 'https://maven.terraformersmc.com/releases/' }              // ModMenu (Fabric)
     }
 
     tasks.withType(JavaCompile).configureEach {

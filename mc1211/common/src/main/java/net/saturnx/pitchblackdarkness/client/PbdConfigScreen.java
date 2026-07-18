@@ -20,8 +20,8 @@ import net.saturnx.pitchblackdarkness.core.PbdCommands;
  * e per la stessa ragione per cui su Fabric la config è un {@code .properties}
  * scritto a mano. {@code Screen}, {@code AbstractSliderButton} e
  * {@code CycleButton} sono classi di Minecraft, quindi questa schermata vive in
- * {@code common} e vale su entrambi i loader: oggi la apre ModMenu su Fabric,
- * domani può sostituire anche la {@code ConfigurationScreen} di NeoForge.</p>
+ * {@code common} e vale su entrambi i loader.
+ * <p><b>ATTENZIONE: al momento nessuno la apre</b> — vedi nota sotto.</p>
  */
 public final class PbdConfigScreen extends Screen {
     private static final String KEY = "pitchblackdarkness.configuration.";

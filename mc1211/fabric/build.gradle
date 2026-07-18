@@ -42,15 +42,6 @@ dependencies {
 
     implementation project(':mc1211:common')
 
-    // ModMenu: dipendenza OBBLIGATORIA su Fabric (scelta utente 2026-07-18) —
-    // è l'unico modo di aprire la schermata di config, che su NeoForge è invece
-    // built-in. Dichiarata anche in `depends` nel fabric.mod.json.
-    // NON transitivo: si tirerebbe dietro mezzo Fabric API, che c'è già sopra.
-    // NON `include`: va installata dal giocatore, non impacchettata dentro.
-    modImplementation("com.terraformersmc:modmenu:${modmenu_version}") {
-        transitive = false
-    }
-
     // Su Fabric MixinExtras non è bundled: va incluso nel jar (jar-in-jar).
     include implementation('io.github.llamalad7:mixinextras-fabric:0.5.3')
 }
