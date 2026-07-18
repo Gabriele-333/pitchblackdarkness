@@ -3,6 +3,19 @@ plugins {
 }
 
 loom {
+    // Senza questo, nel client di SVILUPPO Fabric non sa che le risorse di
+    // common fanno parte della mod: i lang non vengono caricati e la schermata
+    // mostra le chiavi grezze ("pitchblackdarkness.configuration.darknessLevel")
+    // invece dei testi. Nel jar buildato il problema non c'è, perché l'output di
+    // common viene fuso dentro (vedi il task jar in fondo) — è un disallineamento
+    // solo del dev run. È l'equivalente Loom del blocco `mods` di NeoForge.
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+            sourceSet project(':common').sourceSets.main
+        }
+    }
+
     runs {
         client {
             // Diagnostica dei mixin nel client di sviluppo, per avere su Fabric
@@ -28,16 +41,12 @@ dependencies {
 
     implementation project(':common')
 
-    // ModMenu: solo in compile, e NON transitivo (si tirerebbe dietro mezzo
-    // Fabric API). A runtime è opzionale — vedi PbdModMenu.
-    modCompileOnly("com.terraformersmc:modmenu:${modmenu_version}") {
-        transitive = false
-    }
-    // ...ma nel client di SVILUPPO serve installato davvero, altrimenti non
-    // esiste il pulsante Mods e la schermata di config non è testabile.
-    // modLocalRuntime = solo il run locale: non entra nel jar pubblicato né
-    // nei metadata, quindi per il giocatore ModMenu resta facoltativo.
-    modLocalRuntime("com.terraformersmc:modmenu:${modmenu_version}") {
+    // ModMenu: dipendenza OBBLIGATORIA su Fabric (scelta utente 2026-07-18) —
+    // è l'unico modo di aprire la schermata di config, che su NeoForge è invece
+    // built-in. Dichiarata anche in `depends` nel fabric.mod.json.
+    // NON transitivo: si tirerebbe dietro mezzo Fabric API, che c'è già sopra.
+    // NON `include`: va installata dal giocatore, non impacchettata dentro.
+    modImplementation("com.terraformersmc:modmenu:${modmenu_version}") {
         transitive = false
     }
 
