@@ -32,8 +32,6 @@ public final class PbdConfigScreen extends Screen {
 
     private final Screen parent;
 
-    private LevelSlider slider;
-
     public PbdConfigScreen(Screen parent) {
         super(Component.translatable(KEY + "title"));
         this.parent = parent;
@@ -45,7 +43,7 @@ public final class PbdConfigScreen extends Screen {
         int x = this.width / 2 - WIDGET_WIDTH / 2;
         int y = this.height / 4;
 
-        slider = addRenderableWidget(new LevelSlider(x, y, platform.darknessLevel()));
+        addRenderableWidget(new LevelSlider(x, y, platform.darknessLevel()));
         y += ROW_HEIGHT;
 
         addRenderableWidget(toggle("moonMatters", x, y, platform.moonMatters(),
@@ -86,13 +84,11 @@ public final class PbdConfigScreen extends Screen {
 
     @Override
     public void onClose() {
-        // Persiste il valore corrente dello slider PRIMA di rileggere la config.
-        // Serve per la tastiera: le frecce passano da applyValue() (che è solo
-        // anteprima) e non emettono mai onRelease, quindi senza questo il valore
-        // scelto da tastiera verrebbe buttato via. Con il mouse è idempotente.
-        if (slider != null) {
-            PbdState.setLevel(slider.level());
-        }
+        // Forza su disco un'eventuale anteprima ancora in attesa: il nucleo
+        // salva mezzo secondo dopo l'ultima modifica, e senza questo chiudere
+        // (o uscire dal gioco) subito dopo aver mosso lo slider perderebbe il
+        // valore. Copre anche le frecce da tastiera, che non emettono onRelease.
+        PbdLevels.flushPending();
         PbdState.refresh();
         this.minecraft.setScreen(parent);
     }

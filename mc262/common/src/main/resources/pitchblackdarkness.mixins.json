@@ -4,7 +4,8 @@
   "package": "net.saturnx.pitchblackdarkness.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "LightmapRenderStateExtractorMixin"
+    "LightmapRenderStateExtractorMixin",
+    "VideoSettingsScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -231,6 +231,8 @@ public final class PbdLevels {
      */
     public static void previewLevel(double level, float moonBrightness) {
         configLevel = (float) clamp(level, MIN_LEVEL, MAX_LEVEL);
+        persistPending = true;
+        persistCountdown = PERSIST_DELAY_TICKS;
         recompute(moonBrightness);
     }
 
@@ -258,10 +260,42 @@ public final class PbdLevels {
         recompute(moonBrightness);
     }
 
-    /** Scala il countdown del boost di un tick. Da chiamare dal tick del loader. */
+    // ===== Persistenza ritardata =====
+    //
+    // Gli slider (schermata di config e Impostazioni Video) notificano il nuovo
+    // valore a OGNI pixel di trascinamento, e nessuno dei due espone un evento
+    // di "rilascio" affidabile: OptionInstance non ce l'ha proprio, e da tastiera
+    // non arriva comunque. Scrivere lì significherebbe centinaia di scritture su
+    // disco per una singola trascinata. Quindi l'anteprima è immediata (si vede
+    // il buio cambiare mentre trascini, che per questa mod è desiderabile) e il
+    // salvataggio parte quando il valore sta fermo da un po'.
+
+    /** Mezzo secondo: abbastanza da non scrivere durante la trascinata, poco da non perdersi. */
+    private static final int PERSIST_DELAY_TICKS = 10;
+
+    private static boolean persistPending;
+    private static int persistCountdown;
+
+    /** Scala i countdown di un tick. Da chiamare dal tick del loader. */
     public static void tickBoost() {
         if (boostTicksLeft > 0) {
             boostTicksLeft--;
+        }
+        if (persistPending && --persistCountdown <= 0) {
+            persistPending = false;
+            platform().setDarknessLevel(configLevel);
+        }
+    }
+
+    /**
+     * Forza subito su disco un'eventuale anteprima in sospeso. Da chiamare quando
+     * si chiude una schermata: senza, uscire dal gioco entro mezzo secondo dalla
+     * modifica la perderebbe.
+     */
+    public static void flushPending() {
+        if (persistPending) {
+            persistPending = false;
+            platform().setDarknessLevel(configLevel);
         }
     }
 
