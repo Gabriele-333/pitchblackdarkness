@@ -33,6 +33,13 @@ dependencies {
     modCompileOnly("com.terraformersmc:modmenu:${modmenu_version}") {
         transitive = false
     }
+    // ...ma nel client di SVILUPPO serve installato davvero, altrimenti non
+    // esiste il pulsante Mods e la schermata di config non è testabile.
+    // modLocalRuntime = solo il run locale: non entra nel jar pubblicato né
+    // nei metadata, quindi per il giocatore ModMenu resta facoltativo.
+    modLocalRuntime("com.terraformersmc:modmenu:${modmenu_version}") {
+        transitive = false
+    }
 
     // Su Fabric MixinExtras non è bundled: va incluso nel jar (jar-in-jar).
     include implementation('io.github.llamalad7:mixinextras-fabric:0.5.3')
