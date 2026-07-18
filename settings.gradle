@@ -32,3 +32,4 @@ include 'mc1211:fabric'
 // 26.2: per ora solo il modulo vanilla (gli hook). I moduli di loader
 // arriveranno quando NeoForge 26.2 uscira' di beta.
 include 'mc262:common'
+include 'mc262:neoforge'

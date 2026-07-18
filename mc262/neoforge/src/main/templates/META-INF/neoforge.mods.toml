@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+authors = "${mod_authors}"
+description = '''${mod_description}'''
+# Mod client-only: il server non deve né averla né saperne niente.
+# IGNORE_ALL_VERSION = nessun check di versione nell'handshake: si entra
+# su qualsiasi server, con o senza la mod installata altrove.
+displayTest = "IGNORE_ALL_VERSION"
+
+[[dependencies."${mod_id}"]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neo_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies."${mod_id}"]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+# I due hook sulla lightmap (asse caverna + asse notte). NeoForge non espone
+# alcun evento sulla lightmap (verificato su 21.1 in V112: solo ViewportEvent.*),
+# e senza toccarla lo slider "Luminosità" del giocatore vanifica qualsiasi buio.
+# NB: NeoForge gira su mapping Mojang ufficiali a runtime -> nessun refmap.
+[[mixins]]
+config = "${mod_id}.mixins.json"
